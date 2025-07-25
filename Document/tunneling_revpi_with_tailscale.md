@@ -35,11 +35,15 @@ To allow the RevPi to route traffic between networks:
 sudo nano /etc/sysctl.conf
 ```
 
+<img src="./assets/tailscale_revpi/cmd_revpi_sysctl.png">
+
 Uncomment or add the following line:
 
 ```conf
 net.ipv4.ip_forward=1
 ```
+
+<img src="./assets/tailscale_revpi/ip_forward.png"/>
 
 Apply the change without rebooting:
 
@@ -52,26 +56,35 @@ sudo sysctl -p
 ## 🐧 Step 3: Add RevPi to Tailscale Network
 
 1. In your Tailscale Admin Panel → click **Add device** → choose **Linux Server**.
-2. Enable **Exit Node** and **Subnet Routing** options.
+2. Set the settings as shown in the image below.
+    <img src="./assets/tailscale_revpi/new_linux_server.png">
 3. Copy the auto-generated install command and authorization key.
+    <img src="./assets/tailscale_revpi/copy_script.png">
 4. Paste and run that install script on your RevPi:
 
 ```bash
 curl -fsSL https://tailscale.com/install.sh | sh
-sudo tailscale up --authkey <your_auth_key> --advertise-exit-node --advertise-routes=192.168.18.0/24
+sudo tailscale up --authkey <your_auth_key>
 ```
-
-Replace `192.168.18.0/24` with your actual **local network subnet**.
+<img src="./assets/tailscale_revpi/cmd_install_tailscale.jpg"/>
 
 ---
 
-## ⚙️ Step 4: Start Tailscale on RevPi
+## ⚙️ Step 4: Setting & Start Tailscale on RevPi
 
-If you haven't already done so in the install script, you can manually bring up Tailscale:
+Once you have installed Tailscale, you can configure the settings:
 
+1. Set Routes
 ```bash
 sudo tailscale set --accept-routes=true --advertise-routes=192.168.18.0/24
 ```
+
+2. Up Tailscale
+```bash
+sudo tailscale up
+```
+
+<img src="./assets/tailscale_revpi/cmd_tailscale-set_up.png"/>
 
 ---
 
@@ -96,7 +109,6 @@ ping <RevPi-Tailscale-IP>
 
 ## 🛠️ Optional Tips
 
-- To make RevPi available as an **exit node** from anywhere, enable it via Tailscale Admin → Machines → Enable Exit Node.
 - To make RevPi Accept Route from tailscale, enable it via Tailscale Admin → Machines → Enable Accept Route.
 - You can access the RevPi web UI or SSH using its **Tailscale IP address**, even from outside the LAN.
 - Make sure firewall rules allow ICMP (ping) or desired ports.
@@ -105,7 +117,7 @@ ping <RevPi-Tailscale-IP>
 
 ## 🧾 References
 
-- Official Tailscale Docs: https://tailscale.com/kb/
+- Official Tailscale Docs: https://tailscale.com/kb/1017/install
 - RevPi Documentation: https://revolutionpi.com/documentation/
 
 ---
